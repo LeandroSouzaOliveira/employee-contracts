@@ -1,6 +1,9 @@
 package entities;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import entities.enums.WorkerLevel;
@@ -59,8 +62,26 @@ public class Worker {
 	public List<HourContract> getContracts() {
 		return contracts;
 	}
-
-	public void setContracts(List<HourContract> contracts) {
-		this.contracts = contracts;
+	
+	public void addContract(HourContract contract) {
+		contracts.add(contract);
+	}
+	
+	public void removeContract(HourContract contract) {
+		contracts.remove(contract);
+	}
+	
+	public double income(int year, int month) {
+		double sum = baseSalary;
+		for (HourContract c : contracts) {
+			Date x = c.getDate();
+			LocalDate localDate = x.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			int c_month = localDate.getMonthValue();
+			int c_year = localDate.getYear();
+			if (year == c_year && month == c_month) {
+				sum += c.totalValue();
+			}
+		}
+		return sum;
 	}
 }
